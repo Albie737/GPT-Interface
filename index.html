@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Interface</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ChatGPT Interface</h1>
+        </header>
+        <main>
+            <div class="api-key-selection">
+                <label>
+                    <input type="radio" id="useMyApiKey" name="apiKeyOption" value="myKey" checked>
+                    Use My API Key (Rate Limited)
+                </label>
+                <label>
+                    <input type="radio" id="useUserApiKey" name="apiKeyOption" value="userKey">
+                    Use Your Own API Key (No Rate Limits)
+                </label>
+            </div>
+            <div class="input-section" id="userApiKeySection">
+                <label for="apiKey">Your API Key:</label>
+                <input type="text" id="apiKey" placeholder="Enter your API Key">
+            </div>
+            <div class="version-selection">
+                <label for="modelVersion">Select Model Version:</label>
+                <select id="modelVersion">
+                    <option value="gpt-4">GPT-4</option>
+                    <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                    <option value="gpt-4o">GPT-4o</option>
+                    <option value="gpt-4o-mini">GPT-4o Mini</option>
+                </select>
+            </div>
+            <div class="chat-section">
+                <textarea id="chatInput" placeholder="Type your message..."></textarea>
+                <button id="sendMessage">Send</button>
+                <div id="chatOutput"></div>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2024 ChatGPT Interface. All rights reserved.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
