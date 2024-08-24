@@ -2,6 +2,9 @@
 const settingsButton = document.getElementById('settingsButton');
 const settingsModal = document.getElementById('settingsModal');
 const closeButton = document.querySelector('.close');
+const useUserApiKey = document.getElementById('useUserApiKey');
+const useMyApiKey = document.getElementById('useMyApiKey');
+const userApiKeySection = document.getElementById('userApiKeySection');
 
 settingsButton.onclick = function () {
     settingsModal.style.display = 'block';
@@ -15,6 +18,15 @@ window.onclick = function (event) {
     if (event.target === settingsModal) {
         settingsModal.style.display = 'none';
     }
+}
+
+// Show/Hide API Key input field based on selection
+useUserApiKey.onclick = function () {
+    userApiKeySection.style.display = 'block';
+}
+
+useMyApiKey.onclick = function () {
+    userApiKeySection.style.display = 'none';
 }
 
 // Handling the chat input and sending messages
@@ -34,15 +46,15 @@ document.getElementById('sendMessage').addEventListener('click', async () => {
 
     const chatOutput = document.getElementById('chatOutput');
     const messageElement = document.createElement('div');
-    messageElement.textContent = message;
+    messageElement.textContent = `You: ${message}`;
     chatOutput.appendChild(messageElement);
 
     // Scroll to the bottom
     chatOutput.scrollTop = chatOutput.scrollHeight;
 
-    // Simulating API response
+    // Simulate API response
     const responseElement = document.createElement('div');
-    responseElement.textContent = "Response: [This is where the model's response will go]";
+    responseElement.textContent = "ChatGPT: [This is where the model's response will go]";
     chatOutput.appendChild(responseElement);
 
     chatOutput.scrollTop = chatOutput.scrollHeight;
