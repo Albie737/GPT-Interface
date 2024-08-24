@@ -1,35 +1,3 @@
-// Toggle settings modal
-const settingsButton = document.getElementById('settingsButton');
-const settingsModal = document.getElementById('settingsModal');
-const closeButton = document.querySelector('.close');
-const useUserApiKey = document.getElementById('useUserApiKey');
-const useMyApiKey = document.getElementById('useMyApiKey');
-const userApiKeySection = document.getElementById('userApiKeySection');
-
-settingsButton.onclick = function () {
-    settingsModal.style.display = 'block';
-}
-
-closeButton.onclick = function () {
-    settingsModal.style.display = 'none';
-}
-
-window.onclick = function (event) {
-    if (event.target === settingsModal) {
-        settingsModal.style.display = 'none';
-    }
-}
-
-// Show/Hide API Key input field based on selection
-useUserApiKey.onclick = function () {
-    userApiKeySection.style.display = 'block';
-}
-
-useMyApiKey.onclick = function () {
-    userApiKeySection.style.display = 'none';
-}
-
-// Handling the chat input and sending messages
 document.getElementById('sendMessage').addEventListener('click', async () => {
     const selectedApiKeyOption = document.querySelector('input[name="apiKeyOption"]:checked').value;
     const modelVersion = document.getElementById('modelVersion').value;
@@ -45,19 +13,48 @@ document.getElementById('sendMessage').addEventListener('click', async () => {
     }
 
     const chatOutput = document.getElementById('chatOutput');
-    const messageElement = document.createElement('div');
-    messageElement.textContent = `You: ${message}`;
-    chatOutput.appendChild(messageElement);
+    const userMessageElement = document.createElement('div');
+    userMessageElement.textContent = `You: ${message}`;
+    chatOutput.appendChild(userMessageElement);
 
     // Scroll to the bottom
     chatOutput.scrollTop = chatOutput.scrollHeight;
 
-    // Simulate API response
-    const responseElement = document.createElement('div');
-    responseElement.textContent = "ChatGPT: [This is where the model's response will go]";
-    chatOutput.appendChild(responseElement);
+    try {
+        const response = await fetch('/api/sendMessage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: modelVersion,
+                message: message
+            })
+        });
 
-    chatOutput.scrollTop = chatOutput.scrollHeight;
+        // Ensure the response is OK
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
 
+        // Parse the JSON response
+        const data = await response.json();
+
+        // Display ChatGPT response
+        const botMessageElement = document.createElement('div');
+        botMessageElement.textContent = `ChatGPT: ${data.response}`;
+        chatOutput.appendChild(botMessageElement);
+
+    } catch (error) {
+        console.error('Fetch error:', error);
+
+        const errorMessageElement = document.createElement('div');
+        errorMessageElement.textContent = `Error: ${error.message}`;
+        chatOutput.appendChild(errorMessageElement);
+    }
+
+    // Clear the input field
     document.getElementById('chatInput').value = '';
+    chatOutput.scrollTop = chatOutput.scrollHeight;
 });
