@@ -1,6 +1,6 @@
 document.getElementById('sendMessage').addEventListener('click', async () => {
     const selectedApiKeyOption = document.querySelector('input[name="apiKeyOption"]:checked').value;
-    const modelVersion = document.getElementById('modelVersion').value;
+    const modelVersion = selectedApiKeyOption === 'limited' ? 'gpt-4o-mini' : document.getElementById('modelVersion').value;
     const message = document.getElementById('chatInput').value;
     let apiKey = '';
 
@@ -10,6 +10,9 @@ document.getElementById('sendMessage').addEventListener('click', async () => {
             alert('Please enter your API Key.');
             return;
         }
+    } else {
+        // Use the rate-limited API key
+        apiKey = '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';
     }
 
     const chatOutput = document.getElementById('chatOutput');
@@ -17,11 +20,10 @@ document.getElementById('sendMessage').addEventListener('click', async () => {
     userMessageElement.textContent = `You: ${message}`;
     chatOutput.appendChild(userMessageElement);
 
-    // Scroll to the bottom
     chatOutput.scrollTop = chatOutput.scrollHeight;
 
     try {
-        const response = await fetch('/api/sendMessage', {
+        const response = await fetch('https://api.openai.com/v1/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -29,21 +31,19 @@ document.getElementById('sendMessage').addEventListener('click', async () => {
             },
             body: JSON.stringify({
                 model: modelVersion,
-                message: message
+                prompt: message,
+                max_tokens: 150
             })
         });
 
-        // Ensure the response is OK
         if (!response.ok) {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
 
-        // Parse the JSON response
         const data = await response.json();
 
-        // Display ChatGPT response
         const botMessageElement = document.createElement('div');
-        botMessageElement.textContent = `ChatGPT: ${data.response}`;
+        botMessageElement.textContent = `ChatGPT: ${data.choices[0].text.trim()}`;
         chatOutput.appendChild(botMessageElement);
 
     } catch (error) {
@@ -54,7 +54,6 @@ document.getElementById('sendMessage').addEventListener('click', async () => {
         chatOutput.appendChild(errorMessageElement);
     }
 
-    // Clear the input field
     document.getElementById('chatInput').value = '';
     chatOutput.scrollTop = chatOutput.scrollHeight;
 });
