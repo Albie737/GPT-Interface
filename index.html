@@ -25,35 +25,60 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Settings</h2>
-                <div class="api-key-selection">
-                    <label>
-                        <input type="radio" id="useMyApiKey" name="apiKeyOption" value="myKey" checked>
-                        Use My API Key (Rate Limited)
-                    </label>
-                    <label>
-                        <input type="radio" id="useUserApiKey" name="apiKeyOption" value="userKey">
-                        Use Your Own API Key (No Rate Limits)
-                    </label>
+                <div>
+                    <input type="radio" id="limited" name="apiKeyOption" value="limited" checked>
+                    <label for="limited">Rate-Limited (gpt-4o-mini)</label><br>
+                    <input type="radio" id="userKey" name="apiKeyOption" value="userKey">
+                    <label for="userKey">Use My Own API Key</label><br>
+                    <input type="text" id="apiKey" placeholder="Enter your OpenAI API Key" disabled>
                 </div>
-                <div class="input-section" id="userApiKeySection" style="display: none;">
-                    <label for="apiKey">Your API Key:</label>
-                    <input type="text" id="apiKey" placeholder="Enter your API Key">
-                </div>
-                <div class="version-selection">
-                    <label for="modelVersion">Select Model Version:</label>
-                    <select id="modelVersion">
+                <div>
+                    <label for="modelVersion">Model:</label>
+                    <select id="modelVersion" disabled>
                         <option value="gpt-4">GPT-4</option>
                         <option value="gpt-4-turbo">GPT-4 Turbo</option>
                         <option value="gpt-4o">GPT-4o</option>
-                        <option value="gpt-4o-mini">GPT-4o Mini</option>
+                        <option value="gpt-4o-mini">GPT-4o-mini</option>
                     </select>
                 </div>
             </div>
         </div>
-        <footer>
-            <p>&copy; 2024 ChatGPT Interface. All rights reserved.</p>
-        </footer>
     </div>
+
     <script src="script.js"></script>
+    <script>
+        // Handle settings modal
+        const modal = document.getElementById("settingsModal");
+        const btn = document.getElementById("settingsButton");
+        const span = document.getElementsByClassName("close")[0];
+        const userKeyOption = document.getElementById("userKey");
+        const limitedOption = document.getElementById("limited");
+        const apiKeyInput = document.getElementById("apiKey");
+        const modelVersionSelect = document.getElementById("modelVersion");
+
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        userKeyOption.addEventListener('change', () => {
+            apiKeyInput.disabled = false;
+            modelVersionSelect.disabled = false;
+        });
+
+        limitedOption.addEventListener('change', () => {
+            apiKeyInput.disabled = true;
+            modelVersionSelect.disabled = true;
+        });
+    </script>
 </body>
 </html>
