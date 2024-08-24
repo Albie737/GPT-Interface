@@ -1,11 +1,23 @@
-document.getElementById('useMyApiKey').addEventListener('change', () => {
-    document.getElementById('userApiKeySection').style.display = 'none';
-});
+// Toggle settings modal
+const settingsButton = document.getElementById('settingsButton');
+const settingsModal = document.getElementById('settingsModal');
+const closeButton = document.querySelector('.close');
 
-document.getElementById('useUserApiKey').addEventListener('change', () => {
-    document.getElementById('userApiKeySection').style.display = 'block';
-});
+settingsButton.onclick = function () {
+    settingsModal.style.display = 'block';
+}
 
+closeButton.onclick = function () {
+    settingsModal.style.display = 'none';
+}
+
+window.onclick = function (event) {
+    if (event.target === settingsModal) {
+        settingsModal.style.display = 'none';
+    }
+}
+
+// Handling the chat input and sending messages
 document.getElementById('sendMessage').addEventListener('click', async () => {
     const selectedApiKeyOption = document.querySelector('input[name="apiKeyOption"]:checked').value;
     const modelVersion = document.getElementById('modelVersion').value;
@@ -21,25 +33,19 @@ document.getElementById('sendMessage').addEventListener('click', async () => {
     }
 
     const chatOutput = document.getElementById('chatOutput');
-    chatOutput.textContent = 'Loading...';
+    const messageElement = document.createElement('div');
+    messageElement.textContent = message;
+    chatOutput.appendChild(messageElement);
 
-    try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                apiKey: apiKey,
-                modelVersion: modelVersion,
-                message: message,
-                useMyApiKey: selectedApiKeyOption === 'myKey'
-            }),
-        });
+    // Scroll to the bottom
+    chatOutput.scrollTop = chatOutput.scrollHeight;
 
-        const result = await response.json();
-        chatOutput.textContent = result.reply || 'No response from API.';
-    } catch (error) {
-        chatOutput.textContent = 'Error: ' + error.message;
-    }
+    // Simulating API response
+    const responseElement = document.createElement('div');
+    responseElement.textContent = "Response: [This is where the model's response will go]";
+    chatOutput.appendChild(responseElement);
+
+    chatOutput.scrollTop = chatOutput.scrollHeight;
+
+    document.getElementById('chatInput').value = '';
 });
